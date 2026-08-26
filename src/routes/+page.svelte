@@ -1,2 +1,13 @@
-<h1>Let's build recipe website</h1>
-<bw-card></bw-card>
+<script>
+    
+</script>
+
+<bw-container grid="true">
+    <bw-card></bw-card> 
+    <bw-card></bw-card> 
+    <bw-card></bw-card> 
+    <bw-card></bw-card> 
+    <bw-card></bw-card> 
+    <bw-card></bw-card> 
+    <bw-card></bw-card> 
+</bw-container>

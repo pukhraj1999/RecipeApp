@@ -1,0 +1,1 @@
+<h1>Favourite Page</h1>
