@@ -13,6 +13,7 @@
             tagTitle="Tags:"
             tags={recipe.tags}
             populate="false"
+            link={"/recipe/"+recipe.id}
         ></bw-card>
 	{/each}
 </bw-container>
