@@ -2,11 +2,16 @@
 
 A modern, full-featured recipe discovery and management application built with Svelte 5 and SvelteKit. Browse thousands of recipes, save your favorites, search for meals, plan your week, and manage your recipe collection all in one place.
 
-## � Live Demo
+## Live Demo
 
 - Netlify: https://cookdish.netlify.app/
 
-## �🌟 Features
+## Repo Links
+- CookDish Repo (SvelteKit): https://github.com/pukhraj1999/RecipeApp
+
+- BlackWall Repo (StencilJs): https://github.com/pukhraj1999/blackwall
+
+## 🌟 Features
 
 - **Recipe Discovery**: Browse a curated collection of recipes from the DummyJSON API
 - **Search & Filter**: Find recipes by name, cuisine, meal type, and difficulty level
