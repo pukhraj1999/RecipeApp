@@ -126,7 +126,7 @@
 </svelte:head>
 
 <bw-container
-	class="mx-auto box-border block min-h-screen max-w-325 bg-[#0b0f19] px-6 py-8 font-sans text-slate-100"
+	pd="10px"
 >
 	<header class="mb-8 flex flex-wrap items-start justify-between gap-4">
 		<div>

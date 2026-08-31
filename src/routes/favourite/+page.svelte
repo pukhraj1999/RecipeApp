@@ -37,7 +37,7 @@
 	<title>My Favorite Recipes - Recipe App</title>
 </svelte:head>
 
-<bw-container pd="20px">
+<bw-container pd="10px">
 	{#if favoriteRecipes && favoriteRecipes.length > 0}
 		<header class="mb-8">
 			<h1 class="m-0 mb-2 text-3xl font-extrabold md:text-4xl">
@@ -49,7 +49,7 @@
 		</header>
 		<bw-container grid="true" class="w-full">
 			{#each favoriteRecipes as recipe (recipe.id)}
-				<bw-container mg="10px">
+				<bw-container mg-v="10px">
 					<bw-card
 						card-radius="15px"
 						img-src={recipe.image ? recipe.image : FALLBACK_IMG}

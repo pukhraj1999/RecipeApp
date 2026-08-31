@@ -193,7 +193,9 @@
 
 	function handleDelete(id: number, name: string) {
 		if (confirm(`Are you sure you want to delete "${name}"?`)) {
-			recipes = recipes.filter((r) => r.id !== id);
+			const nextRecipes = recipes.filter((r) => r.id !== id);
+			recipes = nextRecipes;
+			localStorage.setItem(STORAGE_KEY, JSON.stringify(nextRecipes));
 		}
 	}
 
@@ -204,13 +206,13 @@
 </script>
 
 <!-- Root Container directly set to full viewport min-height without extra wrappers -->
-<bw-container pd="1.5rem" mg="0" radius="0px">
+<bw-container pd="10px" mg="0" radius="0px">
 	<bw-container
 		flex={true}
 		radius="15px"
 		spaceBetween={true}
-		pdV="1rem"
-		pdH="1.5rem"
+		pd-v="1rem"
+		pd-h="1.5rem"
 		mg="0 0 2rem 0"
 		primary={true}
 	>

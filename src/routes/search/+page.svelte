@@ -68,32 +68,31 @@
 			Search <span class="text-blue-400">Recipes</span>
 		</h1>
 
-		<form
-			onsubmit={handleSearch}
-			class="srounded-xl flex flex-wrap items-center border border-white/10 bg-white/4 px-4 py-2"
-		>
-			<svg
-				width="20"
-				height="20"
-				viewBox="0 0 24 24"
-				fill="none"
-				stroke="#64748b"
-				stroke-width="2"
-				class="shrink-0"
+		<form onsubmit={handleSearch}>
+			<div
+				class="flex flex-wrap items-center rounded-xl border border-white/10 bg-white/4 px-4 py-2"
 			>
-				<circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" />
-			</svg>
-			<input
-				type="text"
-				placeholder="Search by title, ingredient, or tag..."
-				bind:value={searchQuery}
-				class="flex-1 border-none bg-transparent text-base text-slate-100 outline-none placeholder:text-slate-500"
-			/>
-			<bw-container grid="true" primary="true" mgV="5px">
-				<button
-					type="submit"
-					class="pointer flex justify-center border-2 border-white p-2 text-xl hover:bg-white"
+				<svg
+					width="20"
+					height="20"
+					viewBox="0 0 24 24"
+					fill="none"
+					stroke="#64748b"
+					stroke-width="2"
+					class="m-1 shrink-0"
 				>
+					<circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" />
+				</svg>
+				<input
+					type="text"
+					placeholder="Search by title, ingredient, or tag..."
+					bind:value={searchQuery}
+					class="flex-1 border-none  bg-transparent text-base text-slate-100 placeholder:text-slate-500"
+				/>
+			</div>
+
+			<bw-container grid="true" mg-v="10px" primary="true">
+				<button type="submit" class="pointer border-2 border-white p-2 text-xl hover:bg-white hover:text-transparent">
 					Search
 				</button>
 			</bw-container>
@@ -116,7 +115,7 @@
 						populate="false"
 					>
 						<bw-container primary="true" split="true">
-							<bw-container primary="true" mg="5px">
+							<bw-container primary="true" mg="2px">
 								<bw-btn
 									size="1rem"
 									name="Check"
@@ -125,7 +124,7 @@
 									radius="10px"
 								></bw-btn>
 							</bw-container>
-							<bw-container primary="true" mg="5px">
+							<bw-container primary="true" mg="2px">
 								<bw-btn
 									size="1rem"
 									name={isFavorited ? '❤️ Favorited' : '🤍 Favourite'}
@@ -142,9 +141,7 @@
 	{:else}
 		<bw-container
 			primary={true}
-			radius="14px"
-			pd="3rem"
-			border="1px solid rgba(255, 255, 255, 0.08)"
+			radius="1                                                                                                                                                                                                                                                                                         55, 0.08)"
 			class="text-center"
 		>
 			<p class="m-0 text-base text-slate-400">
