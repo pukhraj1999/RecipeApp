@@ -13,18 +13,17 @@
 	});
 
 	// Navbar Configuration
-	const homeLink:{name:string,link:string} = {name:"CookDish", link:"/"};
-	const links:Array<{name:string,link:string}> = [
-		{name:"Home", link:"/"},
-		{name:"Search", link:"/search"},
-		{name:"Manage", link:"/manage"},
-		{name:"Favourite", link:"/favourite"},
-		{name:"Weekly Planner", link:"/planner"},
-		{name:"About", link:"/about"}
-	]
-
+	const homeLink: { name: string; link: string } = { name: 'CookDish', link: '/' };
+	const links: Array<{ name: string; link: string }> = [
+		{ name: 'Home', link: '/' },
+		{ name: 'Search', link: '/search' },
+		{ name: 'Manage', link: '/manage' },
+		{ name: 'Favourite', link: '/favourite' },
+		{ name: 'Weekly Planner', link: '/planner' },
+		{ name: 'About', link: '/about' }
+	];
 </script>
 
 <svelte:head><link rel="icon" href={favicon} /></svelte:head>
-<bw-nav  homeLink={homeLink} navLinks={links}></bw-nav>
+<bw-nav {homeLink} navLinks={links}></bw-nav>
 {@render children()}

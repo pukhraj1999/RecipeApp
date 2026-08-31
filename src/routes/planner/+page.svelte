@@ -1,322 +1,365 @@
 <script lang="ts">
-    import { onMount } from 'svelte';
-    import type { PageData } from './$types';
+	import { onMount } from 'svelte';
+	import type { PageData } from './$types';
 
-    interface MealSlot {
-        id: string;
-        title: string;
-        image?: string;
-        prepTimeMinutes?: number;
-        cookTimeMinutes?: number;
-        caloriesPerServing?: number;
-    }
+	interface MealSlot {
+		id: string;
+		title: string;
+		image?: string;
+		prepTimeMinutes?: number;
+		cookTimeMinutes?: number;
+		caloriesPerServing?: number;
+	}
 
-    interface DayPlan {
-        breakfast: MealSlot | null;
-        lunch: MealSlot | null;
-        dinner: MealSlot | null;
-    }
+	interface DayPlan {
+		breakfast: MealSlot | null;
+		lunch: MealSlot | null;
+		dinner: MealSlot | null;
+	}
 
-    type WeekPlannerState = Record<string, DayPlan>;
+	type WeekPlannerState = Record<string, DayPlan>;
 
-    // Receive data loaded from +page.ts
-    let { data }: { data: PageData } = $props();
-    let recipes = $derived(data.recipes);
+	let { data }: { data: PageData } = $props();
+	let recipes = $derived(data.recipes);
 
-    const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
-    const mealTypes = ['breakfast', 'lunch', 'dinner'] as const;
-    
-    let plannerState = $state<WeekPlannerState>({
-        Monday: { breakfast: null, lunch: null, dinner: null },
-        Tuesday: { breakfast: null, lunch: null, dinner: null },
-        Wednesday: { breakfast: null, lunch: null, dinner: null },
-        Thursday: { breakfast: null, lunch: null, dinner: null },
-        Friday: { breakfast: null, lunch: null, dinner: null },
-        Saturday: { breakfast: null, lunch: null, dinner: null },
-        Sunday: { breakfast: null, lunch: null, dinner: null }
-    });
+	const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+	const mealTypes = ['breakfast', 'lunch', 'dinner'] as const;
 
-    let isModalOpen = $state(false);
-    let selectedDay = $state<string>('Monday');
-    let selectedMealType = $state<'breakfast' | 'lunch' | 'dinner'>('breakfast');
-    let customRecipeTitle = $state('');
-    let selectedRecipeId = $state<number | string>('');
+	let plannerState = $state<WeekPlannerState>({
+		Monday: { breakfast: null, lunch: null, dinner: null },
+		Tuesday: { breakfast: null, lunch: null, dinner: null },
+		Wednesday: { breakfast: null, lunch: null, dinner: null },
+		Thursday: { breakfast: null, lunch: null, dinner: null },
+		Friday: { breakfast: null, lunch: null, dinner: null },
+		Saturday: { breakfast: null, lunch: null, dinner: null },
+		Sunday: { breakfast: null, lunch: null, dinner: null }
+	});
 
-    let isResetModalOpen = $state(false);
+	let isModalOpen = $state(false);
+	let selectedDay = $state<string>('Monday');
+	let selectedMealType = $state<'breakfast' | 'lunch' | 'dinner'>('breakfast');
+	let customRecipeTitle = $state('');
+	let selectedRecipeId = $state<number | string>('');
 
-    let modalTitle = $derived(`Add Meal for ${selectedDay}`);
+	let isResetModalOpen = $state(false);
 
-    onMount(() => {
-        const saved = localStorage.getItem('recipe_app_planner');
-        if (saved) {
-            try {
-                plannerState = JSON.parse(saved);
-            } catch (e) {
-                console.error('Failed to parse saved planner data', e);
-            }
-        }
-    });
+	let modalTitle = $derived(`Add Meal for ${selectedDay}`);
 
-    function saveState() {
-        if (typeof window !== 'undefined') {
-            localStorage.setItem('recipe_app_planner', JSON.stringify(plannerState));
-        }
-    }
+	onMount(() => {
+		const saved = localStorage.getItem('recipe_app_planner');
+		if (saved) {
+			try {
+				plannerState = JSON.parse(saved);
+			} catch (e) {
+				console.error('Failed to parse saved planner data', e);
+			}
+		}
+	});
 
-    function openModal(day: string, slot?: 'breakfast' | 'lunch' | 'dinner') {
-        selectedDay = day;
-        selectedMealType = slot ?? 'breakfast';
-        selectedRecipeId = '';
-        customRecipeTitle = '';
-        isModalOpen = true;
-    }
+	function saveState() {
+		if (typeof window !== 'undefined') {
+			localStorage.setItem('recipe_app_planner', JSON.stringify(plannerState));
+		}
+	}
 
-    function closeModal() {
-        isModalOpen = false;
-    }
+	function openModal(day: string, slot?: 'breakfast' | 'lunch' | 'dinner') {
+		selectedDay = day;
+		selectedMealType = slot ?? 'breakfast';
+		selectedRecipeId = '';
+		customRecipeTitle = '';
+		isModalOpen = true;
+	}
 
-    function openResetModal() {
-        isResetModalOpen = true;
-    }
+	function closeModal() {
+		isModalOpen = false;
+	}
 
-    function closeResetModal() {
-        isResetModalOpen = false;
-    }
+	function openResetModal() {
+		isResetModalOpen = true;
+	}
 
-    function handleSelectPreset(recipe: (typeof recipes)[0]) {
-        selectedRecipeId = recipe.id;
-        customRecipeTitle = recipe.name;
-    }
+	function closeResetModal() {
+		isResetModalOpen = false;
+	}
 
-    function assignMealToSlot() {
-        if (!customRecipeTitle.trim() && !selectedRecipeId) return;
+	function handleSelectPreset(recipe: (typeof recipes)[0]) {
+		selectedRecipeId = recipe.id;
+		customRecipeTitle = recipe.name;
+	}
 
-        const chosenPreset = recipes.find((r: any) => r.id === selectedRecipeId);
+	function assignMealToSlot() {
+		if (!customRecipeTitle.trim() && !selectedRecipeId) return;
 
-        const newMeal: MealSlot = {
-            id: String(selectedRecipeId) || String(Date.now()),
-            title: customRecipeTitle.trim() || chosenPreset?.name || 'Custom Meal',
-            image: chosenPreset?.image,
-            prepTimeMinutes: chosenPreset?.prepTimeMinutes,
-            cookTimeMinutes: chosenPreset?.cookTimeMinutes,
-            caloriesPerServing: chosenPreset?.caloriesPerServing
-        };
+		const chosenPreset = recipes.find((r: any) => r.id === selectedRecipeId);
 
-        plannerState[selectedDay][selectedMealType] = newMeal;
-        saveState();
-        closeModal();
-    }
+		const newMeal: MealSlot = {
+			id: String(selectedRecipeId) || String(Date.now()),
+			title: customRecipeTitle.trim() || chosenPreset?.name || 'Custom Meal',
+			image: chosenPreset?.image,
+			prepTimeMinutes: chosenPreset?.prepTimeMinutes,
+			cookTimeMinutes: chosenPreset?.cookTimeMinutes,
+			caloriesPerServing: chosenPreset?.caloriesPerServing
+		};
 
-    function removeMeal(day: string, slot: 'breakfast' | 'lunch' | 'dinner', event: MouseEvent) {
-        event.stopPropagation();
-        plannerState[day][slot] = null;
-        saveState();
-    }
+		plannerState[selectedDay][selectedMealType] = newMeal;
+		saveState();
+		closeModal();
+	}
 
-    function confirmClearWholeWeek() {
-        days.forEach((day) => {
-            plannerState[day] = { breakfast: null, lunch: null, dinner: null };
-        });
-        saveState();
-        closeResetModal();
-    }
+	function removeMeal(day: string, slot: 'breakfast' | 'lunch' | 'dinner', event: MouseEvent) {
+		event.stopPropagation();
+		plannerState[day][slot] = null;
+		saveState();
+	}
+
+	function confirmClearWholeWeek() {
+		days.forEach((day) => {
+			plannerState[day] = { breakfast: null, lunch: null, dinner: null };
+		});
+		saveState();
+		closeResetModal();
+	}
 </script>
 
 <svelte:head>
-    <title>Weekly Meal Planner - Recipe App</title>
+	<title>Weekly Meal Planner - Recipe App</title>
 </svelte:head>
 
-<bw-container class="block max-w-325 mx-auto px-6 py-8 box-border min-h-screen bg-[#0b0f19] text-slate-100 font-sans">
-    <header class="flex flex-wrap justify-between items-start mb-8 gap-4">
-        <div>
-            <h1 class="text-3xl md:text-4xl font-extrabold m-0 mb-1">
-                Weekly <span class="text-blue-400">Meal Planner</span>
-            </h1>
-            <p class="text-slate-400 m-0 text-sm md:text-base">Organize your meals and prep schedule for the week ahead.</p>
-        </div>
-        <button
-            class="bg-red-500/10 text-red-300 border border-red-500/25 px-4 py-2 rounded-lg font-semibold text-sm cursor-pointer transition-colors hover:bg-red-500/20"
-            onclick={openResetModal}
-        >
-            Reset Week
-        </button>
-    </header>
+<bw-container
+	class="mx-auto box-border block min-h-screen max-w-325 bg-[#0b0f19] px-6 py-8 font-sans text-slate-100"
+>
+	<header class="mb-8 flex flex-wrap items-start justify-between gap-4">
+		<div>
+			<h1 class="m-0 mb-1 text-3xl font-extrabold md:text-4xl">
+				Weekly <span class="text-blue-400">Meal Planner</span>
+			</h1>
+			<p class="m-0 text-sm text-slate-400 md:text-base">
+				Organize your meals and prep schedule for the week ahead.
+			</p>
+		</div>
+		<button
+			class="cursor-pointer rounded-lg border border-red-500/25 bg-red-500/10 px-4 py-2 text-sm font-semibold text-red-300 transition-colors hover:bg-red-500/20"
+			onclick={openResetModal}
+		>
+			Reset Week
+		</button>
+	</header>
 
-    <div class="grid grid-cols-[repeat(auto-fill,minmax(280px,1fr))] gap-5">
-        {#each days as day}
-            <bw-container primary={true} radius="16px" pd="1.25rem" border="1px solid rgba(255, 255, 255, 0.08)" class="flex flex-col">
-                <div class="flex justify-between items-center mb-4">
-                    <h3 class="m-0 text-lg text-slate-50 font-bold">{day}</h3>
-                    <button
-                        class="bg-white/5 text-blue-400 border border-white/10 rounded-lg w-8 h-8 cursor-pointer text-lg flex items-center justify-center transition-colors hover:bg-blue-400/15"
-                        onclick={() => openModal(day)}
-                        aria-label="Add meal to {day}"
-                    >
-                        +
-                    </button>
-                </div>
+	<div class="grid grid-cols-[repeat(auto-fill,minmax(280px,1fr))] gap-5">
+		{#each days as day}
+			<bw-container
+				primary={true}
+				radius="16px"
+				pd="1.25rem"
+				border="1px solid rgba(255, 255, 255, 0.08)"
+				class="flex flex-col"
+			>
+				<div class="mb-4 flex items-center justify-between">
+					<h3 class="m-0 text-lg font-bold text-slate-50">{day}</h3>
+					<button
+						class="flex h-8 w-8 cursor-pointer items-center justify-center rounded-lg border border-white/10 bg-white/5 text-lg text-blue-400 transition-colors hover:bg-blue-400/15"
+						onclick={() => openModal(day)}
+						aria-label="Add meal to {day}"
+					>
+						+
+					</button>
+				</div>
 
-                <div class="flex flex-col gap-3 flex-1">
-                    {#each mealTypes as slotKey}
-                        {@const meal = plannerState[day]?.[slotKey]}
+				<div class="flex flex-1 flex-col gap-3">
+					{#each mealTypes as slotKey}
+						{@const meal = plannerState[day]?.[slotKey]}
 
-                        <div
-                            class="rounded-xl p-3 cursor-pointer transition-all select-none {meal
-                                ? 'bg-[#0b0f19]/60 border border-white/10 shadow-sm'
-                                : 'bg-white/2 border border-dashed border-white/10 hover:border-blue-400/40 hover:bg-white/4'}"
-                            role="button"
-                            tabindex="0"
-                            onclick={() => openModal(day, slotKey)}
-                            onkeydown={(e) => e.key === 'Enter' && openModal(day, slotKey)}
-                        >
-                            <div class="flex justify-between items-center mb-1">
-                                <span class="text-[0.7rem] uppercase text-slate-500 font-bold tracking-wider">{slotKey}</span>
-                                {#if meal}
-                                    <button
-                                        class="bg-transparent border-none text-slate-500 text-xs cursor-pointer px-1 py-0.5 rounded hover:text-red-400 hover:bg-red-500/10"
-                                        onclick={(e) => removeMeal(day, slotKey, e)}
-                                        title="Remove meal"
-                                    >
-                                        ✕
-                                    </button>
-                                {/if}
-                            </div>
+						<div
+							class="cursor-pointer rounded-xl p-3 transition-all select-none {meal
+								? 'border border-white/10 bg-[#0b0f19]/60 shadow-sm'
+								: 'border border-dashed border-white/10 bg-white/2 hover:border-blue-400/40 hover:bg-white/4'}"
+							role="button"
+							tabindex="0"
+							onclick={() => openModal(day, slotKey)}
+							onkeydown={(e) => e.key === 'Enter' && openModal(day, slotKey)}
+						>
+							<div class="mb-1 flex items-center justify-between">
+								<span class="text-[0.7rem] font-bold tracking-wider text-slate-500 uppercase"
+									>{slotKey}</span
+								>
+								{#if meal}
+									<button
+										class="cursor-pointer rounded border-none bg-transparent px-1 py-0.5 text-xs text-slate-500 hover:bg-red-500/10 hover:text-red-400"
+										onclick={(e) => removeMeal(day, slotKey, e)}
+										title="Remove meal"
+									>
+										✕
+									</button>
+								{/if}
+							</div>
 
-                            {#if meal}
-                                <div class="flex gap-3 items-center mt-1">
-                                    {#if meal.image}
-                                        <img src={meal.image} alt={meal.title} class="w-10 h-10 rounded-lg object-cover shrink-0" />
-                                    {/if}
-                                    <div class="overflow-hidden">
-                                        <p class="m-0 text-sm font-semibold text-slate-100 truncate">{meal.title}</p>
-                                        {#if meal.prepTimeMinutes || meal.caloriesPerServing}
-                                            <div class="flex gap-2 text-xs text-slate-400 mt-0.5">
-                                                {#if meal.prepTimeMinutes}
-                                                    <span>⏱️ {(meal.prepTimeMinutes ?? 0) + (meal.cookTimeMinutes ?? 0)}m</span>
-                                                {/if}
-                                                {#if meal.caloriesPerServing}
-                                                    <span>🔥 {meal.caloriesPerServing} kcal</span>
-                                                {/if}
-                                            </div>
-                                        {/if}
-                                    </div>
-                                </div>
-                            {:else}
-                                <p class="my-1 text-xs text-slate-500">+ Tap to add recipe</p>
-                            {/if}
-                        </div>
-                    {/each}
-                </div>
-            </bw-container>
-        {/each}
-    </div>
+							{#if meal}
+								<div class="mt-1 flex items-center gap-3">
+									{#if meal.image}
+										<img
+											src={meal.image}
+											alt={meal.title}
+											class="h-10 w-10 shrink-0 rounded-lg object-cover"
+										/>
+									{/if}
+									<div class="overflow-hidden">
+										<p class="m-0 truncate text-sm font-semibold text-slate-100">{meal.title}</p>
+										{#if meal.prepTimeMinutes || meal.caloriesPerServing}
+											<div class="mt-0.5 flex gap-2 text-xs text-slate-400">
+												{#if meal.prepTimeMinutes}
+													<span
+														>⏱️ {(meal.prepTimeMinutes ?? 0) + (meal.cookTimeMinutes ?? 0)}m</span
+													>
+												{/if}
+												{#if meal.caloriesPerServing}
+													<span>🔥 {meal.caloriesPerServing} kcal</span>
+												{/if}
+											</div>
+										{/if}
+									</div>
+								</div>
+							{:else}
+								<p class="my-1 text-xs text-slate-500">+ Tap to add recipe</p>
+							{/if}
+						</div>
+					{/each}
+				</div>
+			</bw-container>
+		{/each}
+	</div>
 </bw-container>
 
 <bw-modal is-open={isModalOpen} name={modalTitle} onmodalClosed={closeModal}>
-    <div class="flex flex-col max-h-[calc(80vh-4rem)] box-border">
-        <div class="flex flex-col gap-5 overflow-y-auto p-5 flex-1 scrollbar-none [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
-            <div class="flex flex-col gap-2">
-                <label for="meal-type-select" class="text-xs font-bold uppercase text-slate-400 tracking-wider">Meal Slot</label>
-                <div class="grid grid-cols-3 gap-2 bg-black/20 p-1 rounded-xl">
-                    {#each mealTypes as type}
-                        <button
-                            type="button"
-                            class="border-none py-2 rounded-lg text-xs capitalize cursor-pointer font-semibold transition-colors {selectedMealType === type
-                                ? 'bg-blue-600 text-white'
-                                : 'bg-transparent text-slate-400'}"
-                            onclick={() => (selectedMealType = type)}
-                        >
-                            {type}
-                        </button>
-                    {/each}
-                </div>
-            </div>
+	<div class="box-border flex max-h-[calc(80vh-4rem)] flex-col">
+		<div
+			class="flex flex-1 scrollbar-none flex-col gap-5 overflow-y-auto p-5 [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
+		>
+			<div class="flex flex-col gap-2">
+				<label
+					for="meal-type-select"
+					class="text-xs font-bold tracking-wider text-slate-400 uppercase">Meal Slot</label
+				>
+				<div class="grid grid-cols-3 gap-2 rounded-xl bg-black/20 p-1">
+					{#each mealTypes as type}
+						<button
+							type="button"
+							class="cursor-pointer rounded-lg border-none py-2 text-xs font-semibold capitalize transition-colors {selectedMealType ===
+							type
+								? 'bg-blue-600 text-white'
+								: 'bg-transparent text-slate-400'}"
+							onclick={() => (selectedMealType = type)}
+						>
+							{type}
+						</button>
+					{/each}
+				</div>
+			</div>
 
-            <div class="flex flex-col gap-2">
-                <label for="sample-recipes" class="text-xs font-bold uppercase text-slate-400 tracking-wider">Select from Loaded Recipes</label>
-                <div class="flex flex-col gap-2 max-h-60 overflow-y-auto pr-1 scrollbar-none [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
-                    {#each recipes as recipe}
-                        <button
-                            type="button"
-                            class="flex items-center gap-3 bg-white/3 border p-2 rounded-xl cursor-pointer text-left transition-colors hover:bg-white/6 {selectedRecipeId === recipe.id
-                                ? 'border-blue-400 bg-blue-400/15'
-                                : 'border-white/6'}"
-                            onclick={() => handleSelectPreset(recipe)}
-                        >
-                            <img src={recipe.image} alt={recipe.name} class="w-10 h-10 rounded-md object-cover" />
-                            <div>
-                                <p class="m-0 text-xs font-semibold text-slate-100">{recipe.name}</p>
-                                <span class="text-[0.75rem] text-slate-500"
-                                    >{recipe.prepTimeMinutes + recipe.cookTimeMinutes} mins • {recipe.caloriesPerServing} kcal</span
-                                >
-                            </div>
-                        </button>
-                    {/each}
-                </div>
-            </div>
+			<div class="flex flex-col gap-2">
+				<label
+					for="sample-recipes"
+					class="text-xs font-bold tracking-wider text-slate-400 uppercase"
+					>Select from Loaded Recipes</label
+				>
+				<div
+					class="flex max-h-60 scrollbar-none flex-col gap-2 overflow-y-auto pr-1 [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
+				>
+					{#each recipes as recipe}
+						<button
+							type="button"
+							class="flex cursor-pointer items-center gap-3 rounded-xl border bg-white/3 p-2 text-left transition-colors hover:bg-white/6 {selectedRecipeId ===
+							recipe.id
+								? 'border-blue-400 bg-blue-400/15'
+								: 'border-white/6'}"
+							onclick={() => handleSelectPreset(recipe)}
+						>
+							<img src={recipe.image} alt={recipe.name} class="h-10 w-10 rounded-md object-cover" />
+							<div>
+								<p class="m-0 text-xs font-semibold text-slate-100">{recipe.name}</p>
+								<span class="text-[0.75rem] text-slate-500"
+									>{recipe.prepTimeMinutes + recipe.cookTimeMinutes} mins • {recipe.caloriesPerServing}
+									kcal</span
+								>
+							</div>
+						</button>
+					{/each}
+				</div>
+			</div>
 
-            <div class="flex flex-col gap-2">
-                <label for="custom-meal-title" class="text-xs font-bold uppercase text-slate-400 tracking-wider">Or Type Custom Meal Name</label>
-                <input
-                    id="custom-meal-title"
-                    type="text"
-                    placeholder="e.g., Avocado Toast, Protein Smoothie..."
-                    bind:value={customRecipeTitle}
-                    class="bg-white/4 border border-white/10 rounded-xl p-3 text-slate-100 text-sm outline-none focus:border-blue-400"
-                />
-            </div>
-        </div>
+			<div class="flex flex-col gap-2">
+				<label
+					for="custom-meal-title"
+					class="text-xs font-bold tracking-wider text-slate-400 uppercase"
+					>Or Type Custom Meal Name</label
+				>
+				<input
+					id="custom-meal-title"
+					type="text"
+					placeholder="e.g., Avocado Toast, Protein Smoothie..."
+					bind:value={customRecipeTitle}
+					class="rounded-xl border border-white/10 bg-white/4 p-3 text-sm text-slate-100 outline-none focus:border-blue-400"
+				/>
+			</div>
+		</div>
 
-        <div class="p-4 px-5 border-t border-white/10 flex justify-end gap-3 bg-[#131b2e] sticky bottom-0 z-10 shrink-0">
-            <button
-                type="button"
-                class="bg-transparent border border-white/10 text-slate-400 px-5 py-2 rounded-lg cursor-pointer font-semibold text-sm hover:bg-white/5"
-                onclick={closeModal}
-            >
-                Cancel
-            </button>
-            <button
-                type="button"
-                class="bg-blue-600 text-white border-none px-5 py-2 rounded-lg cursor-pointer font-semibold text-sm hover:bg-blue-700 transition-colors"
-                onclick={assignMealToSlot}
-            >
-                Save to Plan
-            </button>
-        </div>
-    </div>
+		<div
+			class="sticky bottom-0 z-10 flex shrink-0 justify-end gap-3 border-t border-white/10 bg-[#131b2e] p-4 px-5"
+		>
+			<button
+				type="button"
+				class="cursor-pointer rounded-lg border border-white/10 bg-transparent px-5 py-2 text-sm font-semibold text-slate-400 hover:bg-white/5"
+				onclick={closeModal}
+			>
+				Cancel
+			</button>
+			<button
+				type="button"
+				class="cursor-pointer rounded-lg border-none bg-blue-600 px-5 py-2 text-sm font-semibold text-white transition-colors hover:bg-blue-700"
+				onclick={assignMealToSlot}
+			>
+				Save to Plan
+			</button>
+		</div>
+	</div>
 </bw-modal>
 
 <bw-modal is-open={isResetModalOpen} name="Reset Weekly Plan" onmodalClosed={closeResetModal}>
-    <div class="flex flex-col max-h-[calc(80vh-4rem)] box-border">
-        <div class="flex flex-col gap-5 overflow-y-auto p-5 flex-1 scrollbar-none [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
-            <p class="m-0 text-sm text-slate-300 leading-relaxed">Are you sure you want to clear your entire weekly meal plan? This action cannot be undone.</p>
-        </div>
-        <div class="p-4 px-5 border-t border-white/10 flex justify-end gap-3 bg-[#131b2e] sticky bottom-0 z-10 shrink-0">
-            <button
-                type="button"
-                class="bg-transparent border border-white/10 text-slate-400 px-5 py-2 rounded-lg cursor-pointer font-semibold text-sm hover:bg-white/5"
-                onclick={closeResetModal}
-            >
-                Cancel
-            </button>
-            <button
-                type="button"
-                class="bg-red-600 text-white border-none px-5 py-2 rounded-lg cursor-pointer font-semibold text-sm hover:bg-red-700 transition-colors"
-                onclick={confirmClearWholeWeek}
-            >
-                Clear Week
-            </button>
-        </div>
-    </div>
+	<div class="box-border flex max-h-[calc(80vh-4rem)] flex-col">
+		<div
+			class="flex flex-1 scrollbar-none flex-col gap-5 overflow-y-auto p-5 [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
+		>
+			<p class="m-0 text-sm leading-relaxed text-slate-300">
+				Are you sure you want to clear your entire weekly meal plan? This action cannot be undone.
+			</p>
+		</div>
+		<div
+			class="sticky bottom-0 z-10 flex shrink-0 justify-end gap-3 border-t border-white/10 bg-[#131b2e] p-4 px-5"
+		>
+			<button
+				type="button"
+				class="cursor-pointer rounded-lg border border-white/10 bg-transparent px-5 py-2 text-sm font-semibold text-slate-400 hover:bg-white/5"
+				onclick={closeResetModal}
+			>
+				Cancel
+			</button>
+			<button
+				type="button"
+				class="cursor-pointer rounded-lg border-none bg-red-600 px-5 py-2 text-sm font-semibold text-white transition-colors hover:bg-red-700"
+				onclick={confirmClearWholeWeek}
+			>
+				Clear Week
+			</button>
+		</div>
+	</div>
 </bw-modal>
 
 <style>
-    bw-modal::part(modal-body),
-    bw-modal :global(.modal-body) {
-        max-height: 80vh;
-        display: flex;
-        flex-direction: column;
-        overflow: hidden;
-        padding: 0;
-    }
+	bw-modal::part(modal-body),
+	bw-modal :global(.modal-body) {
+		max-height: 80vh;
+		display: flex;
+		flex-direction: column;
+		overflow: hidden;
+		padding: 0;
+	}
 </style>

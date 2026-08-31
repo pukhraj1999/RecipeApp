@@ -241,8 +241,7 @@
 					cardRadius="16px"
 				>
 					<div class="mt-4 flex justify-center gap-3">
-						<bw-btn name="Check" radius="8px" size="0.82rem" link={"recipe/"+recipe.id}
-						></bw-btn>
+						<bw-btn name="Check" radius="8px" size="0.82rem" link={'recipe/' + recipe.id}></bw-btn>
 						<bw-btn name="✏️ Edit" radius="8px" size="0.82rem" onpress={() => openEditModal(recipe)}
 						></bw-btn>
 						<bw-btn
