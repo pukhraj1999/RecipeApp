@@ -87,11 +87,11 @@
                 {@const isFavorited = favorites.some((fav) => fav.id === recipe.id)}
                 <bw-container mg="10px">
                     <bw-card
-                        card-radius="15px" 
-                        imgSrc={recipe.image ? recipe.image : FALLBACK_IMG}
-                        imgAlt={recipe.name}
+                        card-radius="15px"
+                        img-src={recipe.image ? recipe.image : FALLBACK_IMG}
+                        img-alt={recipe.name}
                         name={recipe.name}
-                        tagTitle="Tags:"
+                        tag-title="Tags:"
                         rating={recipe.rating}
                         tags={recipe.tags}
                         populate="false"

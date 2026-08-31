@@ -5,10 +5,11 @@
 
 	let { children } = $props();
 
-	onMount(async () => {
-		// Import the Stencil component loader dynamically on client load
-		const { defineCustomElements } = await import('blackwall/loader');
-		defineCustomElements(window);
+	onMount(() => {
+		const script = document.createElement('script');
+		script.type = 'module';
+		script.src = '/vendor/blackwall/blackwall.esm.js';
+		document.head.appendChild(script);
 	});
 
 	// Navbar Configuration

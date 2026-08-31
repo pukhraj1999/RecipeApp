@@ -1,0 +1,1 @@
+import{r as t,h as s}from"./p-D7grKXBN.js";import{format as e}from"./index.esm.js";const r=class{constructor(s){t(this,s)}first;middle;last;getText(){return e(this.first,this.middle,this.last)}render(){return s("div",{key:"e83f753054fb4dd40f53704c2da17bb2fe466e2e"},"Hello, World! I'm ",this.getText())}};r.style=":host{display:block}";export{r as my_component}

@@ -1,0 +1,1 @@
+import{I as e,Z as t,l as n,x as r,y as i,z as a}from"../chunks/BKRn_yzG.js";import"../chunks/xihTtKlq.js";var o=r(`<bw-container><h1>🙂 Look who is back.</h1> <p>Stuck  in this page 🫠</p> <bw-btn></bw-btn></bw-container>`,2);function s(r){var s=o(),c=a(e(s),4);n(c,`name`,`Go Back`),n(c,`link`,`/`),t(s),i(r,s)}export{s as component};
