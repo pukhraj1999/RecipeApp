@@ -1,42 +1,213 @@
-# sv
+# RecipeApp
 
-Everything you need to build a Svelte project, powered by [`sv`](https://github.com/sveltejs/cli).
+A modern, full-featured recipe discovery and management application built with Svelte 5 and SvelteKit. Browse thousands of recipes, save your favorites, search for meals, plan your week, and manage your recipe collection all in one place.
 
-## Creating a project
+## 🌟 Features
 
-If you're seeing this, you've probably already done this step. Congrats!
+- **Recipe Discovery**: Browse a curated collection of recipes from the DummyJSON API
+- **Search & Filter**: Find recipes by name, cuisine, meal type, and difficulty level
+- **Favorites Management**: Save your favorite recipes locally for quick access
+- **Recipe Details**: View complete recipe information including:
+  - Ingredients and instructions
+  - Prep and cook times
+  - Servings and calorie information
+  - Difficulty level and ratings
+  - Cuisine type and meal categories
+- **Meal Planner**: Plan your weekly meals with ease
+- **Recipe Management**: Create, edit, and delete your own recipes
+- **Responsive Design**: Fully responsive UI that works on desktop, tablet, and mobile devices
+- **Modern UI**: Built with Tailwind CSS and custom Blackwall components
 
-```sh
-# create a new project
-npx sv create my-app
+## 🛠️ Tech Stack
+
+- **Framework**: [Svelte 5](https://svelte.dev) & [SvelteKit](https://kit.svelte.dev)
+- **Language**: TypeScript
+- **Styling**: [Tailwind CSS 4.3](https://tailwindcss.com) with typography and forms plugins
+- **Build Tool**: Vite
+- **UI Components**: [Blackwall](https://github.com/pukhraj1999/blackwall)
+- **Code Quality**:
+  - ESLint with TypeScript support
+  - Prettier for code formatting
+  - Svelte type checking
+
+## 📦 Project Structure
+
+```
+RecpieApp/
+├── src/
+│   ├── lib/
+│   │   ├── assets/          # Static assets
+│   │   ├── types/
+│   │   │   └── recpie.ts    # TypeScript type definitions
+│   │   └── index.ts         # Library exports
+│   ├── routes/              # SvelteKit routes (file-based routing)
+│   │   ├── +layout.svelte   # Root layout
+│   │   ├── +page.svelte     # Home page
+│   │   ├── +page.ts         # Home page load function
+│   │   ├── about/           # About page
+│   │   ├── favourite/       # Favorites page
+│   │   ├── manage/          # Recipe management
+│   │   ├── planner/         # Meal planner
+│   │   ├── recipe/          # Recipe details
+│   │   │   └── [id]/        # Dynamic recipe page
+│   │   └── search/          # Recipe search
+│   ├── app.html             # HTML template
+│   └── app.d.ts             # App types
+├── static/                  # Static files
+├── package.json
+├── vite.config.ts
+├── tsconfig.json
+├── eslint.config.js
+└── prettier.config.js
 ```
 
-To recreate this project with the same configuration:
+## 🚀 Getting Started
 
-```sh
-# recreate this project
-npx sv@0.17.0 create --template minimal --types ts --add prettier eslint tailwindcss="plugins:typography,forms" --install npm RecpieApp
+### Prerequisites
+
+- Node.js 18+ 
+- npm, pnpm, or yarn
+
+### Installation
+
+1. Clone the repository:
+```bash
+git clone <repository-url>
+cd RecpieApp
 ```
 
-## Developing
+2. Install dependencies:
+```bash
+npm install
+# or
+pnpm install
+# or
+yarn install
+```
 
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+### Development
 
-```sh
+Start the development server:
+
+```bash
 npm run dev
-
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
 ```
 
-## Building
+Open your browser and navigate to `http://localhost:5173` (or the URL shown in your terminal).
 
-To create a production version of your app:
+The dev server supports hot module reloading, so changes are reflected instantly.
 
-```sh
+### Type Checking
+
+Run Svelte type checking:
+
+```bash
+npm run check
+```
+
+Watch for type errors in real-time:
+
+```bash
+npm run check:watch
+```
+
+### Code Quality
+
+Format your code with Prettier:
+
+```bash
+npm run format
+```
+
+Check code quality (runs Prettier and ESLint):
+
+```bash
+npm run lint
+```
+
+## 🏗️ Building for Production
+
+Create an optimized production build:
+
+```bash
 npm run build
 ```
 
-You can preview the production build with `npm run preview`.
+Preview the production build locally:
 
-> To deploy your app, you may need to install an [adapter](https://svelte.dev/docs/kit/adapters) for your target environment.
+```bash
+npm run preview
+```
+
+## 📋 Available Routes
+
+| Route | Purpose |
+|-------|---------|
+| `/` | Home - Browse recipes |
+| `/search` | Search and filter recipes |
+| `/favourite` | View saved favorite recipes |
+| `/recipe/[id]` | View recipe details |
+| `/planner` | Weekly meal planning tool |
+| `/manage` | Create and manage your recipes |
+| `/about` | About RecipeApp |
+
+## 💾 Data Storage
+
+- **Recipes**: Fetched from [DummyJSON API](https://dummyjson.com/recipes)
+- **Favorites**: Stored in browser's localStorage under `recipe_app_favorites` key
+
+## 🔧 Configuration
+
+### Tailwind CSS
+
+Tailwind configuration can be modified in `tailwind.config.js` (auto-generated by Vite plugin).
+
+### ESLint & Prettier
+
+- ESLint config: `eslint.config.js`
+- Prettier config: `prettier.config.js`
+- Both are pre-configured with Svelte and TypeScript support
+
+### Vite
+
+Build and dev server configuration: `vite.config.ts`
+
+## 🚀 Deployment
+
+To deploy your app, install an appropriate [SvelteKit adapter](https://kit.svelte.dev/docs/adapters) for your hosting platform:
+
+```bash
+# For Vercel
+npm install -D @sveltejs/adapter-vercel
+
+# For Netlify
+npm install -D @sveltejs/adapter-netlify
+
+# For Node.js
+npm install -D @sveltejs/adapter-node
+```
+
+Then update `svelte.config.js` with your adapter.
+
+## 📝 Type Definitions
+
+Key types are defined in `src/lib/types/recpie.ts`:
+
+```typescript
+- Difficulty: 'Easy' | 'Medium' | 'Hard'
+- MealType: 'Breakfast' | 'Lunch' | 'Dinner' | 'Snack' | 'Appetizer' | 'Beverage' | 'Dessert'
+- Recipe: Complete recipe object with all details
+- RecipeAPIResponse: API response structure
+```
+
+## 📄 License
+
+This project is created with the SvelteKit CLI template.
+
+## 🤝 Contributing
+
+Feel free to fork this project and submit pull requests for any improvements.
+
+## 📧 Support
+
+For issues or questions, please open an issue in the repository.
