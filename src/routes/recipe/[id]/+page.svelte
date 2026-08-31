@@ -1,8 +1,11 @@
 <script lang="ts">
+	import { onMount } from 'svelte';
     import type { PageData } from './$types';
+    import type {Recipe} from "$lib/types/recpie";
 
+    const STORAGE_KEY = 'svelte_recipes_data';
     let { data }: { data: PageData } = $props();
-    let { recipe } = $derived(data);
+    let { recipe, param_id } = $derived(data);
 
     function getTagColor(tag: string) {
         const colors = [
@@ -16,6 +19,14 @@
         for (let i = 0; i < tag.length; i++) hash = tag.charCodeAt(i) + ((hash << 5) - hash);
         return colors[Math.abs(hash) % colors.length];
     }
+
+    onMount(()=>{
+        let localRecipes:Array<Recipe> = JSON.parse(localStorage.getItem(STORAGE_KEY) as string);
+        let selectedRecipes: Array<Recipe> = localRecipes.filter(item => (""+item.id) == param_id);
+        if(selectedRecipes.length > 0){
+            recipe = selectedRecipes[0];
+        }
+    })
 </script>
 
 <svelte:head>
